@@ -1,0 +1,30 @@
+{
+  "name": "react-native-inline-timepicker",
+  "version": "1.0.0",
+  "description": "A simple android timepicker which can be used inline with other react-native components.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": { 
+    "react-native-vector-icons": "^6.4.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Asaye/react-native-inline-timepicker"
+  },
+  "keywords": [
+    "Timepicker",
+    "Android",
+    "Inline"
+  ],
+  "author": {
+    "name": "Asaye Dilbo",
+    "email": "asayechemeda@yahoo.com"
+  },
+  "readme": "README.md",
+  "bugs": {
+    "url": "https://github.com/Asaye/react-native-inline-timepicker/issues"
+  },
+  "license": "ISC"
+}
