@@ -51,7 +51,7 @@ startTime | null | Array | An array containing three numbers and a string to set
 mode24hrs | undefined | boolean | If true, it changes the time mode from meridian based to 24hrs based.
 fontSize | 40 | number | The font size of all the texts in the timepicker except the meridian.
 textColor | #ccc | string | Text color.
-textBorderColor | #555 | string | Background color of the texts.
+textBorderColor | #555 | string | Border color of the background color of the texts.
 textBorderRadius | 4 | number | The border radius of the background of the texts.
 textBackgroundColor | "#555" | string | The background color of the texts.
 colonsMargin | 3 | number | The margin of the colons (:) which defines the space between the hours, minutes and seconds text.
