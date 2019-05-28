@@ -213,7 +213,7 @@ export default class InlineTimePicker extends Component {
 
 const styles = StyleSheet.create(TimePickerStyles);
 
-TimePicker.defaultProps = {		
+InlineTimePicker.defaultProps = {		
 	"fontSize": 40,
 	"textColor": "#ccc",
 	"textBorderColor": "#555",
