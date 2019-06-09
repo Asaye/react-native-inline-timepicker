@@ -1,3 +1,4 @@
+module.exports.TimePickerStyles = 
 {
   "container": {
     "margin": 5,
@@ -38,4 +39,4 @@
     "top": 0, 
     "left": 5
   },
-}
+};
