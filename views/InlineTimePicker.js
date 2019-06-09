@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TimePickerStyles from '../styles/TimePickerStyles.json';
 
-export default class InlineTimePicker extends Component {
+var InlineTimePicker = class extends Component {
 	state = {
 		hours: 12,
 		minutes: 0,
@@ -230,3 +230,5 @@ InlineTimePicker.defaultProps = {
 	"meridianTextColor": "#ccc",	
 	"containerBackgroundColor": "#222",
 };
+
+module.exports.InlineTimePicker = InlineTimePicker;
