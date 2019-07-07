@@ -1,4 +1,8 @@
 # react-native-inline-timepicker
+
+[![npm version](https://badge.fury.io/js/react-native-inline-timepicker.svg)](https://badge.fury.io/js/react-native-inline-timepicker)
+[![npm downloads](https://img.shields.io/npm/dt/react-native-inline-timepicker.svg)](https://badge.fury.io/js/react-native-inline-timepicker)
+
 This is a react-native timepicker for android apps which will be rendered inline with other components. It may be used along with this [inline datepicker](https://www.npmjs.com/package/react-native-inline-datepicker). 
 
 # Getting Started
