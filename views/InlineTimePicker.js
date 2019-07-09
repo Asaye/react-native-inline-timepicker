@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import { Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import TimePickerStyles from '../styles/TimePickerStyles.json';
+import Colors from '../styles/Colors';
+
+const Colors_default = Colors.Colors_default;
+const Colors_bluish = Colors.Colors_bluish;
+const Colors_greenish = Colors.Colors_greenish;
+const Colors_reddish = Colors.Colors_reddish;
 
 var InlineTimePicker = class extends Component {
 	state = {
@@ -13,6 +18,22 @@ var InlineTimePicker = class extends Component {
 	}
 	constructor(props) {
 		super(props);
+		if (this.props.skinColor === "red") {
+			this._colors = Colors_reddish;
+		} else if (this.props.skinColor === "green") {
+			this._colors = Colors_greenish;
+		} else if (this.props.skinColor === "blue") {
+			this._colors = Colors_bluish;
+		} else {
+			this._colors = {
+				"timepicker_txt": this.props.textColor,
+				"timepicker_back": this.props.textBackgroundColor,
+				"timepicker_cont": this.props.containerBackgroundColor,	
+				"timepicker_active": this.props.activeTextBackgroundColor,
+				"timepicker_border": this.props.textBorderColor,
+			};
+		}
+		this._txtColor = { "color": this._colors.timepicker_txt };
 		this._interval = null;
 		if (this.props.startTime !== undefined && 
 			Array.isArray(this.props.startTime) && 
@@ -25,11 +46,14 @@ var InlineTimePicker = class extends Component {
 	}
 	_send = () => {
 		if (!this.props.onChangeTime) return;
-		const h = this.state.hours,
-			  m = this.state.minutes,
-			  s = this.state.seconds,
-			  mn = this.state.meridian;
-		this.props.onChangeTime(h, m, s, mn);
+		var h = this.state.hours,
+			m = this.state.minutes,
+			s = this.state.seconds,
+			mn = this.state.meridian;
+		if (mn === "PM" && h !== 12) {
+			h = h + 12;
+		}
+		this.props.onChangeTime(h, m, s);
 	}
 	_hours = (hours) => {
 		if (typeof hours !== 'number') return;
@@ -87,37 +111,6 @@ var InlineTimePicker = class extends Component {
 		} 
 		this.setState({seconds: sec});
 	}	
-	_getTimeStyles = () => {
-		return  {
-			fontSize: this.props.fontSize,
-			borderRadius: this.props.textBorderRadius,
-			color: this.props.textColor,
-			backgroundColor: this.props.textBackgroundColor,
-			borderColor: this.props.textBorderColor
-		};
-	}
-	_getColonStyles = () => {
-		return  {					
-			fontSize: this.props.fontSize,
-			color: this.props.colonsTextColor,
-			marginHorizontal: this.props.colonsMargin,
-		};
-	}
-	_getActiveColors = (active) => {
-		var res = {style: {}};
-		if (active) {
-			res.style = {
-				backgroundColor: this.props.activeTextBackgroundColor,
-				borderColor: this.props.activeTextBorderColor,
-				borderWidth: this.props.activeTextBorderWidth,
-			}
-		} else {
-			res.style = {
-				backgroundColor: this.props.textBackgroundColor
-			}
-		}
-		return res;
-	}
 	_increment = (inc) => {
 		const active = this.state.updating, val = this.state[active];
 		
@@ -137,98 +130,167 @@ var InlineTimePicker = class extends Component {
 	}
 	_update = (item)=> {
 		const active = this.state.updating;
+ 
 		if (active === item) {
 			this.setState({updating: ""});
-			this["_" + item + "Text"].setNativeProps(this._getActiveColors());
+			this["_" + item + "Text"]
+				.setNativeProps({ style: {
+							  	"backgroundColor": this._colors.timepicker_back,
+								"borderWidth": 1,
+							   } });
 		} else {			
 			if (active.length > 0) {			
-				this["_" + active + "Text"].setNativeProps(this._getActiveColors());
+				this["_" + active + "Text"]
+					.setNativeProps({ style: {
+									  	"backgroundColor": this._colors.timepicker_back,
+										"borderWidth": 1,
+									  } });
 			}
-			this["_" + item + "Text"].setNativeProps(this._getActiveColors(true));
+			this["_" + item + "Text"]
+				.setNativeProps({ style: {
+								  	"backgroundColor": this._colors.timepicker_active,
+									"borderWidth": 2,
+								  } });
 			this.setState({updating: item});
 		}
 	}
+	_getContainerColor = () => {
+		return {
+    		"backgroundColor": this._colors.timepicker_cont,
+		};
+	}
+	_getTextStyle = () => {
+		return {
+			"fontSize": this.props.fontSize,
+			"borderRadius": this.props.borderRadius,
+    		"color": this._colors.timepicker_txt,
+			"backgroundColor": this._colors.timepicker_back,
+			"borderColor": this._colors.timepicker_border
+		};
+	}
+	
 	componentDidUpdate(prevProps, prevState) {		
 		 if (this.state !== prevState) this._send();
 	}
 	render() {	
 		return (
-		    <View style = {[ styles.container, 
-		    	             {backgroundColor: this.props.containerBackgroundColor}]}>
+			<View>
+		    <View style = {[styles.container, this._getContainerColor()]}>
 				<View style ={styles.timeContainer}>
 					<TouchableOpacity onPress = {_ => this._update("hours")}>
-						<Text style = {[styles.text, this._getTimeStyles()]} 
+						<Text style = {[styles.text, this._getTextStyle()]} 
 							ref = {c => this._hoursText = c}>
 							{this.state.hours < 10 ? "0" : ""}{this.state.hours}
 						</Text>						
 					</TouchableOpacity>
-					<Text style = {this._getColonStyles()}>{":"}</Text>
+					<Text style = {[styles.colon, this._txtColor]}>{":"}</Text>
 					<TouchableOpacity onPress = {_ => this._update("minutes")}>
-						<Text style = {[styles.text, this._getTimeStyles()]} 
+						<Text style = {[styles.text, this._getTextStyle()]} 
 							ref = {c => this._minutesText = c}>
 							{this.state.minutes < 10 ? "0" : ""}{this.state.minutes}
 						</Text>
 					</TouchableOpacity>
-					<Text style = {this._getColonStyles()}>{":"}</Text>
+					<Text style = {[styles.colon, this._txtColor]}>{":"}</Text>
 					<TouchableOpacity onPress = {_ => this._update("seconds")}>
-						<Text style = {[styles.text, this._getTimeStyles()]} 
+						<Text style = {[styles.text, this._getTextStyle()]} 
 							ref = {c => this._secondsText = c}>
 							{this.state.seconds < 10 ? "0" : ""}{this.state.seconds}
 						</Text>
 					</TouchableOpacity>
-					<View style = {{width: 40}}>
-						{ this.props.mode24hrs !== true && 
-							<TouchableOpacity style = {styles.meridian}
-								onPress = {_ => this._meridian()}>
-								<Text style = {{ fontSize: 16,
-									             color: this.props.meridianTextColor}}>
-									{this.state.meridian}
-								</Text>
-							</TouchableOpacity>
-						}
-					</View>				
 				</View>
 				{ this.state.updating.length > 0 && 
 					<View style = {styles.center}>
-						<TouchableOpacity style = {[styles.increment, this._getTimeStyles()]} 
+						<TouchableOpacity style = {[styles.text, this._getTextStyle(),  styles.increment]} 
 							onPress= {_ => this._increment(1)}
 							onLongPress= {_ => this._longIncrement(10)}
 							onPressOut = {_ => this._longIncrement()}>
 							<Ionicons name = {"md-add"} size = {this.props.iconSize} 
-								color = {this.props.iconColor}/>
+								color = {this._colors.timepicker_txt}/>
 						</TouchableOpacity>
-						<TouchableOpacity style = {[styles.increment, this._getTimeStyles()]} 
+						<TouchableOpacity style = {[styles.text, this._getTextStyle(), styles.increment]} 
 							onPress= {_ => this._increment(-1)}
 							onLongPress= {_ => this._longIncrement(-10)}
 							onPressOut = {_ => this._longIncrement()}>
 							<Ionicons name = {"md-remove"} size = {this.props.iconSize} 
-								color = {this.props.iconColor}/>
+								color = {this._colors.timepicker_txt}/>
 						</TouchableOpacity>
 					</View>
 				}
+		    </View>
+		    { this.state.updating.length === 0 && 
+			    <View style = {{position:"absolute", top: 10, left: 10}}>
+					{ this.props.mode24hrs !== true && 
+						<TouchableOpacity style = {styles.meridian}
+							onPress = {_ => this._meridian()}>
+							<Text style = {[styles.meridian_text, this._txtColor]}>
+								{this.state.meridian}
+							</Text>
+						</TouchableOpacity>
+					}
+				</View>
+			}	
 		    </View>
 		);
 	}		  
 }
 
-const styles = StyleSheet.create(TimePickerStyles);
+module.exports = InlineTimePicker;
+
+const styles = StyleSheet.create({
+  "container": {
+    "margin": 5,
+    "marginLeft": 7,
+    "width":"auto",
+    "height": 70, 
+    "flexDirection": "row",
+    "justifyContent": "space-around",
+    "alignItems": "center",
+    "alignContent": "center",
+    "borderRadius": 4,
+  },
+  "timeContainer": {
+    "flexDirection": "row",
+    "margin": 5
+  },
+  "center": {
+    "flexDirection": "row",
+    "justifyContent": "space-between",
+    "alignItems": "center"
+  },
+  "text": {
+    "borderWidth": 1,
+    "paddingHorizontal": 5,
+    "textAlign": "center", 
+    "justifyContent": "space-around",
+    "alignItems": "center",
+    "alignContent": "center",
+	"borderWidth": 1,
+  },
+  "increment": {
+    "marginRight": 5,
+    "padding": 7,
+  },
+  "colon": {
+  	"fontSize": 35,
+	"marginHorizontal": 3,
+  },
+  "meridian": {
+    "position": "absolute", 
+    "top": 0, 
+    "left": 5
+  },
+  "meridian_text": {
+    "fontSize": 16,
+  },
+});
 
 InlineTimePicker.defaultProps = {		
-	"fontSize": 40,
+	"fontSize": 35,
 	"textColor": "#ccc",
 	"textBorderColor": "#555",
-	"textBorderRadius": 4,	
-	"textBackgroundColor": "#555",	
-	"colonsMargin": 3,
-	"colonsTextColor": "#ccc",
-	"iconSize": 40,
-	"iconColor": "#ccc",		
-	"iconBackgroundColor": "#555",
-	"activeTextBorderWidth": 2,
-	"activeTextBorderColor": "#555",	
+	"borderRadius": 4,	
+	"textBackgroundColor": "#777",
+	"iconSize": 35,	
 	"activeTextBackgroundColor": "#000",
-	"meridianTextColor": "#ccc",	
-	"containerBackgroundColor": "#222",
+	"containerBackgroundColor": "#555"
 };
-
-module.exports.InlineTimePicker = InlineTimePicker;
