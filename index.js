@@ -1,2 +1,2 @@
-import InlineTimePicker from "./views/InlineTimePicker";
-module.exports.InlineTimePicker = InlineTimePicker;
+import InlineTimePicker from "./views/InlineTimePicker.js";
+module.exports = InlineTimePicker;

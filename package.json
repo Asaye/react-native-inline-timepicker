@@ -1,6 +1,6 @@
 {
   "name": "react-native-inline-timepicker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A simple android timepicker which can be used inline with other react-native components.",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,8 @@
   "keywords": [
     "Timepicker",
     "Android",
-    "Inline"
+    "Inline",
+    "React-native"
   ],
   "author": {
     "name": "Asaye Dilbo",
